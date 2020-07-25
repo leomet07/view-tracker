@@ -6,3 +6,7 @@ numpy==1.18.4
 opencv-python==4.1.1.26
 opencv-python-headless==4.1.1.26
 gunicorn==20.0.4
+python-dotenv==0.14.0
+
+dnspython==2.0.0
+pymongo==3.10.1

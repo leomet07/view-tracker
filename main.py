@@ -4,15 +4,14 @@ from flask import send_file
 from io import BytesIO
 from flask import make_response
 import json
+from db import write_db, get_apps
 
 app = Flask(__name__)
 
 
 apps_count = {}
 
-with open("apps.json") as file:
-    apps_count = json.load(file)
-print(apps_count)
+apps_count = get_apps()
 
 
 @app.route("/<name>")
@@ -21,11 +20,7 @@ def tracker(name):
     if name in apps_count:
         apps_count[name] += 1
 
-        # note that output.json must already exist at this point
-        with open("apps.json", "w") as f:
-            # this would place the entire output on one line
-            # use json.dump(lista_items, f, indent=4) to "pretty-print" with four spaces per indent
-            json.dump(apps_count, f)
+        write_db(name, apps_count[name])
 
         image = write(apps_count[name])
 
