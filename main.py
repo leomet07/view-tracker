@@ -4,25 +4,18 @@ from flask import send_file
 from io import BytesIO
 from flask import make_response
 import json
-from db import write_db, get_apps
+from db import increment, exist
 
 app = Flask(__name__)
 
 
-apps_count = {}
-
-apps_count = get_apps()
-
-
-@app.route("/<name>")
+@app.route("/count/<name>")
 def tracker(name):
 
-    if name in apps_count:
-        apps_count[name] += 1
+    if exist(name):
+        app = increment(name)
 
-        write_db(name, apps_count[name])
-
-        image = write(apps_count[name])
+        image = write(app["count_visited"])
 
         try:
             response = make_response(
@@ -40,6 +33,8 @@ def tracker(name):
             return response
         except:
             pass
+    else:
+        return "Not found"
 
 
 if __name__ == "__main__":
