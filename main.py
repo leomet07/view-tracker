@@ -5,11 +5,20 @@ from io import BytesIO
 from flask import make_response
 import json
 from db import increment, exist
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 
 app = Flask(__name__)
 
 
+limiter = Limiter(
+    app, key_func=get_remote_address, default_limits=["200 per day", "45 per hour"],
+)
+
+
 @app.route("/count/<name>")
+@limiter.limit("1 per minute")
 def tracker(name):
 
     if exist(name):
